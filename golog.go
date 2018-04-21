@@ -96,7 +96,7 @@ func (g *Golog) buildPrefix() string {
 	}
 
 	if g.ShowCallerInfo {
-		callerInfo = getCallerInfo(2)
+		callerInfo = getCallerInfo(3)
 	}
 
 	//build prefix
