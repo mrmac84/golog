@@ -71,10 +71,44 @@ func getCallerInfo(skip int) string {
 	return callerInfo
 }
 
+//Info writes info messages to the established output
+func (g *Golog) Info(format string, v ...interface{}) {
+
+	//build prefix
+	prefix := g.buildPrefix()
+
+	g.Gologger.SetPrefix(prefix)
+
+	g.Gologger.Printf(format, v...)
+}
+
+func (g *Golog) buildPrefix() string {
+	//init prefix values
+	prefix := ""
+	timestamp := ""
+	callerInfo := ""
+
+	if g.ShowPrefix {
+		prefix = g.InfoPrefix
+	}
+	if g.ShowTimestamp {
+		timestamp = time.Now().Format("02-01-2006 15:04:05")
+	}
+
+	if g.ShowCallerInfo {
+		callerInfo = getCallerInfo(2)
+	}
+
+	//build prefix
+	prefix = fmt.Sprintf("%s %s %s ", prefix, timestamp, callerInfo)
+
+	return prefix
+}
+
 //Error writes error messages to the established output
 func (g *Golog) Error(format string, v ...interface{}) {
-	//add caller info to prefix
-	prefix := fmt.Sprintf("ERROR %s %s ", time.Now().Format("02-01-2006 15:04:05"), getCallerInfo(2))
+	//build prefix
+	prefix := g.buildPrefix()
 
 	g.Gologger.SetPrefix(prefix)
 
@@ -83,19 +117,8 @@ func (g *Golog) Error(format string, v ...interface{}) {
 
 //Debug writes debug messages to the established output
 func (g *Golog) Debug(format string, v ...interface{}) {
-	//add caller info to prefix
-	prefix := fmt.Sprintf("DEBUG %s %s ", time.Now().Format("02-01-2006 15:04:05"), getCallerInfo(2))
-
-	g.Gologger.SetPrefix(prefix)
-
-	g.Gologger.Printf(format, v...)
-}
-
-//Info writes info messages to the established output
-func (g *Golog) Info(format string, v ...interface{}) {
-
-	//add caller info to prefix
-	prefix := fmt.Sprintf("INFO %s %s ", time.Now().Format("02-01-2006 15:04:05"), getCallerInfo(2))
+	//build prefix
+	prefix := g.buildPrefix()
 
 	g.Gologger.SetPrefix(prefix)
 
@@ -104,7 +127,7 @@ func (g *Golog) Info(format string, v ...interface{}) {
 
 //SetErrorPrefix updates the prefix used for error logs
 func (g *Golog) SetErrorPrefix(prefix string) {
-	g.Gologger.SetPrefix(prefix)
+	g.ErrorPrefix = prefix
 }
 
 //SetErrorOutput updates the  destination output for error logs
@@ -114,7 +137,7 @@ func (g *Golog) SetErrorOutput(out io.Writer) {
 
 //SetInfoPrefix updates the prefix used for info logs
 func (g *Golog) SetInfoPrefix(prefix string) {
-	g.Gologger.SetPrefix(prefix)
+	g.InfoPrefix = prefix
 }
 
 //SetInfoOutput updates the  destination output for info logs
@@ -122,9 +145,14 @@ func (g *Golog) SetInfoOutput(out io.Writer) {
 	g.Gologger.SetOutput(out)
 }
 
+//SetOutput updates the  destination output for all logs
+func (g *Golog) SetOutput(out io.Writer) {
+	g.Gologger.SetOutput(out)
+}
+
 //SetDebugPrefix updates the prefix used for debug logs
 func (g *Golog) SetDebugPrefix(prefix string) {
-	g.Gologger.SetPrefix(prefix)
+	g.DebugPrefix = prefix
 }
 
 //SetDebugOutput updates the  destination output for debug logs
