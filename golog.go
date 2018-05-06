@@ -71,6 +71,12 @@ func getCallerInfo(skip int) string {
 	return callerInfo
 }
 
+//Println simply calls fmt.Println
+func (g *Golog) Println(v ...interface{}) {
+
+	g.Gologger.Println(v...)
+}
+
 //Info writes info messages to the established output
 func (g *Golog) Info(format string, v ...interface{}) {
 
@@ -100,7 +106,7 @@ func (g *Golog) buildPrefix() string {
 	}
 
 	//build prefix
-	prefix = fmt.Sprintf("%s %s %s ", prefix, timestamp, callerInfo)
+	prefix = fmt.Sprintf("%s %s %s ", "[ "+timestamp+" ]", prefix, callerInfo)
 
 	return prefix
 }
