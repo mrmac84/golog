@@ -76,26 +76,23 @@ func (g *Golog) Println(v ...interface{}) {
 
 	g.Gologger.Println(v...)
 }
-
-//Info writes info messages to the established output
-func (g *Golog) Info(format string, v ...interface{}) {
-
-	//build prefix
-	prefix := g.buildPrefix()
-
-	g.Gologger.SetPrefix(prefix)
-
-	g.Gologger.Printf(format, v...)
-}
-
-func (g *Golog) buildPrefix() string {
+func (g *Golog) buildPrefix(prefixType string) string {
 	//init prefix values
 	prefix := ""
 	timestamp := ""
 	callerInfo := ""
 
 	if g.ShowPrefix {
-		prefix = g.InfoPrefix
+		if prefixType == "info" {
+			prefix = g.InfoPrefix
+		}
+		if prefixType == "debug" {
+			prefix = g.DebugPrefix
+		}
+		if prefixType == "error" {
+			prefix = g.Error
+		}
+
 	}
 	if g.ShowTimestamp {
 		timestamp = time.Now().Format("02-01-2006 15:04:05")
@@ -111,10 +108,21 @@ func (g *Golog) buildPrefix() string {
 	return prefix
 }
 
+//Info writes info messages to the established output
+func (g *Golog) Info(format string, v ...interface{}) {
+
+	//build prefix
+	prefix := g.buildPrefix("info")
+
+	g.Gologger.SetPrefix(prefix)
+
+	g.Gologger.Printf(format, v...)
+}
+
 //Error writes error messages to the established output
 func (g *Golog) Error(format string, v ...interface{}) {
 	//build prefix
-	prefix := g.buildPrefix()
+	prefix := g.buildPrefix("error")
 
 	g.Gologger.SetPrefix(prefix)
 
@@ -124,7 +132,7 @@ func (g *Golog) Error(format string, v ...interface{}) {
 //Debug writes debug messages to the established output
 func (g *Golog) Debug(format string, v ...interface{}) {
 	//build prefix
-	prefix := g.buildPrefix()
+	prefix := g.buildPrefix("debug")
 
 	g.Gologger.SetPrefix(prefix)
 
