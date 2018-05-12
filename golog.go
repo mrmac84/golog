@@ -90,7 +90,7 @@ func (g *Golog) buildPrefix(prefixType string) string {
 			prefix = g.DebugPrefix
 		}
 		if prefixType == "error" {
-			prefix = g.Error
+			prefix = g.ErrorPrefix
 		}
 
 	}
