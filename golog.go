@@ -43,6 +43,9 @@ func New(output io.Writer) *Golog {
 	//Create a default logger having as output destination the writer passed in the constructor.
 	//All loggers will use this writer unless it is excplicitly overwrited by set*Output() functions
 	defaultLogger := log.New(output, "", 0)
+	infoLogger := log.New(output, "", 0)
+	debugLogger := log.New(output, "", 0)
+	errorLogger := log.New(output, "", 0)
 
 	return &Golog{
 		InfoPrefix:     "INFO",
@@ -53,9 +56,9 @@ func New(output io.Writer) *Golog {
 		ShowCallerInfo: true,
 		Out:            output,
 		Gologger:       defaultLogger,
-		InfoLogger:     defaultLogger,
-		ErrorLogger:    defaultLogger,
-		DebugLogger:    defaultLogger,
+		InfoLogger:     infoLogger,
+		ErrorLogger:    errorLogger,
+		DebugLogger:    debugLogger,
 	}
 }
 
