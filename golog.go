@@ -208,6 +208,6 @@ func (g *Golog) SetDebugOutput(out io.Writer) {
 	g.DebugLogger.SetOutput(out)
 }
 
-func (g *Golog) SetLogLevel(level init) {
+func (g *Golog) SetLogLevel(level int) {
 	g.LogLevel = level
 }
