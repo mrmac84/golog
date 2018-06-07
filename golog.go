@@ -15,8 +15,9 @@ func init() {
 }
 
 //Golog represents a golog instance with all the necessary options.
-// infoPrefix: the prefix used for info logs, defaults to INFO
-// debugPrefix: the prefix used for debug logs, defaults to DEBUG
+//LogLeve: the level of the log [0=off 1=errors, 2=errors&debug, 3=all]. Defaults to 3
+//infoPrefix: the prefix used for info logs, defaults to INFO
+//debugPrefix: the prefix used for debug logs, defaults to DEBUG
 //errorPrefix: the prefix used for error logs, defaults to ERROR
 //showTimestmp: show timestamp in the logs; defults to true
 //showPrefix: show prefix in the logs; defaults to true
@@ -24,6 +25,7 @@ func init() {
 //out: output destination for the logs; defaults to stdout
 //gologer: the logger instance
 type Golog struct {
+	LogLevel       int
 	InfoPrefix     string
 	DebugPrefix    string
 	ErrorPrefix    string
@@ -59,6 +61,7 @@ func New(output io.Writer) *Golog {
 		InfoLogger:     infoLogger,
 		ErrorLogger:    errorLogger,
 		DebugLogger:    debugLogger,
+		LogLevel:       3,
 	}
 }
 
@@ -126,6 +129,10 @@ func (g *Golog) buildPrefix(prefixType string) string {
 //Info writes info messages to the established output
 func (g *Golog) Info(format string, v ...interface{}) {
 
+	//do not print Info logs if level != 3
+	if g.LogLevel != 3 {
+		return
+	}
 	//build prefix
 	prefix := g.buildPrefix("info")
 
@@ -136,6 +143,12 @@ func (g *Golog) Info(format string, v ...interface{}) {
 
 //Error writes error messages to the established output
 func (g *Golog) Error(format string, v ...interface{}) {
+
+	//do not print errors if log level = 0
+	if g.LogLevel == 0 {
+		return
+	}
+
 	//build prefix
 	prefix := g.buildPrefix("error")
 
@@ -146,6 +159,12 @@ func (g *Golog) Error(format string, v ...interface{}) {
 
 //Debug writes debug messages to the established output
 func (g *Golog) Debug(format string, v ...interface{}) {
+
+	//do not print Debug logs  if log level is not 2 or 3
+	if g.LogLevel != 2 && g.LogLevel != 3 {
+		return
+	}
+
 	//build prefix
 	prefix := g.buildPrefix("debug")
 
@@ -187,4 +206,8 @@ func (g *Golog) SetDebugPrefix(prefix string) {
 //SetDebugOutput updates the  destination output for debug logs
 func (g *Golog) SetDebugOutput(out io.Writer) {
 	g.DebugLogger.SetOutput(out)
+}
+
+func (g *Golog) SetLogLevel(level init) {
+	g.LogLevel = level
 }
