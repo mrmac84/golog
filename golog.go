@@ -15,7 +15,7 @@ func init() {
 }
 
 //Golog represents a golog instance with all the necessary options.
-//LogLeve: the level of the log [0=off 1=errors, 2=errors&debug, 3=all]. Defaults to 3
+//LogLeve: the level of the log [0=off 1=Error, 2=Error&Info, 3=all]. Defaults to 3
 //infoPrefix: the prefix used for info logs, defaults to INFO
 //debugPrefix: the prefix used for debug logs, defaults to DEBUG
 //errorPrefix: the prefix used for error logs, defaults to ERROR
@@ -121,7 +121,7 @@ func (g *Golog) buildPrefix(prefixType string) string {
 	}
 
 	//build prefix
-	prefix = fmt.Sprintf("%s %s %s ", "[ "+timestamp+" ]", prefix, callerInfo)
+	prefix = fmt.Sprintf("%s %s %s => ", "[ "+timestamp+" ]", prefix, callerInfo)
 
 	return prefix
 }
@@ -129,10 +129,11 @@ func (g *Golog) buildPrefix(prefixType string) string {
 //Info writes info messages to the established output
 func (g *Golog) Info(format string, v ...interface{}) {
 
-	//do not print Info logs if level != 3
-	if g.LogLevel != 3 {
+	//do not print Info logs  if log level is not 2 or 3
+	if g.LogLevel != 2 && g.LogLevel != 3 {
 		return
 	}
+
 	//build prefix
 	prefix := g.buildPrefix("info")
 
@@ -144,7 +145,7 @@ func (g *Golog) Info(format string, v ...interface{}) {
 //Error writes error messages to the established output
 func (g *Golog) Error(format string, v ...interface{}) {
 
-	//do not print errors if log level = 0
+	//do not print errors only if log level = 0
 	if g.LogLevel == 0 {
 		return
 	}
@@ -160,8 +161,8 @@ func (g *Golog) Error(format string, v ...interface{}) {
 //Debug writes debug messages to the established output
 func (g *Golog) Debug(format string, v ...interface{}) {
 
-	//do not print Debug logs  if log level is not 2 or 3
-	if g.LogLevel != 2 && g.LogLevel != 3 {
+	//do not print Debug logs if level != 3
+	if g.LogLevel != 3 {
 		return
 	}
 
